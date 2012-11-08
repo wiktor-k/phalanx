@@ -40,16 +40,16 @@
 <script>
 var c = new Collection();
 
-var newPerson = new Person();
-var newView = new ModelView(document.getElementById("in"), newPerson);
+// add new person section
+var newView = new ModelView(document.getElementById("in"), new Person());
 
 newView.addPerson = function(e) {
-    c.add(newPerson.clone());
-    newPerson.name = "";
+    c.add(this.model.clone());
+    this.model.name = "";
     e.preventDefault();
 };
 
-
+// section rendered for each user in collection
 var modelTemplate = View.template(document.querySelector("li"));
 
 modelTemplate.remove = function(e) {
@@ -75,10 +75,10 @@ modelTemplate.editCancel = function(e) {
     e.preventDefault();
 };
 
-var coll = new CollectionView(View.capture(document.querySelector("ul")), c, modelTemplate);
+// rendered view of users
+var coll = new CollectionView(document.querySelector("ul"), c, modelTemplate);
 
-document.body.appendChild(coll._node);
-
+// live view for first user in collection
 var firstView = new ModelView(document.getElementById("first"));
 c.on("add", function() {
     firstView.model = c.at(0);
