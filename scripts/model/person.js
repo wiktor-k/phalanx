@@ -1,6 +1,6 @@
 function Person() {
 }
 
-Person.attributes = ["name"];
+Person.attributes = ["name", "newName"];
 
 Model.add(Person);

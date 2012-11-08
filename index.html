@@ -8,14 +8,30 @@
     <script src="lib/view/model_view.js"></script>
     <script src="lib/view/collection_view.js"></script>
     <script src="scripts/model/person.js"></script>
+    <style>
+    li .edit { display: none; }
+    li.editing .show { display: none; }
+    li.editing .edit { display: block }
+    </style>
 </head>
 <body>
-    <form id="in">
-        <input data-bind-value="name" autofocus placeholder="e.g. John Doe">
-        <input value="Add" type="submit" data-bind-event="click addPerson">
-    </form>
+    <div id="in" >
+        <form data-bind-event="submit addPerson">
+            <input data-bind-value="name" autofocus placeholder="e.g. John Doe" required>
+            <input value="Add" type="submit">
+        </form>
+    </div>
     <li>
-        <span data-bind="name">testing</span>
+        <div class="show">
+            <span data-bind="name"></span>
+            <a href="#" data-bind-event="click edit">Edit</a>
+            <a href="#" data-bind-event="click remove">Delete</a>
+        </div>
+        <div class="edit">
+            <input data-bind-value="newName" required>
+            <a href="#" data-bind-event="click editOk">Confirm</a>
+            <a href="#" data-bind-event="click editCancel">Cancel</a>
+        </div>
     </li>
     <ul id="a"></ul>
 <script>
@@ -32,6 +48,29 @@ newView.addPerson = function(e) {
 
 
 var modelTemplate = View.template(document.querySelector("li"));
+
+modelTemplate.remove = function(e) {
+    c.remove(this._model);
+    e.preventDefault();
+};
+
+modelTemplate.edit = function(e) {
+    this._model.newName = this._model.name;
+    this._node.classList.add("editing");
+    this.find("input").focus();
+    e.preventDefault();
+};
+
+modelTemplate.editOk = function(e) {
+    this._model.name = this._model.newName;
+    this._node.classList.remove("editing");
+    e.preventDefault();
+};
+
+modelTemplate.editCancel = function(e) {
+    this._node.classList.remove("editing");
+    e.preventDefault();
+};
 
 var coll = new CollectionView(View.capture(document.querySelector("ul")), c, modelTemplate);
 
