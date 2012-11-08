@@ -21,6 +21,9 @@
             <input value="Add" type="submit">
         </form>
     </div>
+    <div id="first">
+        <h3>First user's name: <input data-bind-value="name" placeholder="add new user to see value here"></h3>
+    </div>
     <li>
         <div class="show">
             <span data-bind="name"></span>
@@ -75,6 +78,15 @@ modelTemplate.editCancel = function(e) {
 var coll = new CollectionView(View.capture(document.querySelector("ul")), c, modelTemplate);
 
 document.body.appendChild(coll._node);
+
+var firstView = new ModelView(document.getElementById("first"));
+c.on("add", function() {
+    firstView.model = c.at(0);
+});
+c.on("remove", function() {
+    firstView.model = c.at(0);
+});
+
 
 </script>
 </body>
