@@ -24,19 +24,20 @@
     <div id="first">
         <h3>First user's name: <input data-bind-value="name" placeholder="add new user to see value here"></h3>
     </div>
-    <li>
-        <div class="show">
-            <span data-bind="name"></span>
-            <a href="#" data-bind-event="click edit">Edit</a>
-            <a href="#" data-bind-event="click remove">Delete</a>
-        </div>
-        <div class="edit">
-            <input data-bind-value="newName" required>
-            <a href="#" data-bind-event="click editOk">Confirm</a>
-            <a href="#" data-bind-event="click editCancel">Cancel</a>
-        </div>
-    </li>
-    <ul id="a"></ul>
+    <ul id="a">
+        <li data-repeat>
+            <div class="show">
+                <span data-bind="name"></span>
+                <a href="#" data-bind-event="click edit">Edit</a>
+                <a href="#" data-bind-event="click remove">Delete</a>
+            </div>
+            <div class="edit">
+                <input data-bind-value="newName" required>
+                <a href="#" data-bind-event="click editOk">Confirm</a>
+                <a href="#" data-bind-event="click editCancel">Cancel</a>
+            </div>
+        </li>
+    </ul>
 <script>
 var c = new Collection();
 
@@ -46,37 +47,35 @@ var newView = new ModelView(document.getElementById("in"), new Person());
 newView.addPerson = function(e) {
     c.add(this.model.clone());
     this.model.name = "";
+    this.find("input").focus();
     e.preventDefault();
 };
 
-// section rendered for each user in collection
-var modelTemplate = View.template(document.querySelector("li"));
+// rendered view of users
+var coll = new CollectionView(document.querySelector("ul"), c);
 
-modelTemplate.remove = function(e) {
+coll.remove = function(e) {
     c.remove(this._model);
     e.preventDefault();
 };
 
-modelTemplate.edit = function(e) {
+coll.edit = function(e) {
     this._model.newName = this._model.name;
     this._node.classList.add("editing");
     this.find("input").focus();
     e.preventDefault();
 };
 
-modelTemplate.editOk = function(e) {
+coll.editOk = function(e) {
     this._model.name = this._model.newName;
     this._node.classList.remove("editing");
     e.preventDefault();
 };
 
-modelTemplate.editCancel = function(e) {
+coll.editCancel = function(e) {
     this._node.classList.remove("editing");
     e.preventDefault();
 };
-
-// rendered view of users
-var coll = new CollectionView(document.querySelector("ul"), c, modelTemplate);
 
 // live view for first user in collection
 var firstView = new ModelView(document.getElementById("first"));
